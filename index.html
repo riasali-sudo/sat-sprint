@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0f172a" />
+<title>Rayed's June 6 SAT Sprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+  :root { color-scheme: dark; }
+  html, body { font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body { background: radial-gradient(circle at 20% 0%, #1e293b 0%, #0b1220 60%, #050810 100%); min-height: 100vh; color: #e2e8f0; }
+  .glass { background: rgba(15,23,42,0.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(148,163,184,0.12); }
+  .glow-amber { box-shadow: 0 0 0 1px rgba(245,158,11,0.5), 0 0 32px rgba(245,158,11,0.18); }
+  .glow-green { box-shadow: 0 0 0 1px rgba(34,197,94,0.5), 0 0 24px rgba(34,197,94,0.18); }
+  .glow-purple { box-shadow: 0 0 0 1px rgba(168,85,247,0.4), 0 0 24px rgba(168,85,247,0.15); }
+  .glow-red { box-shadow: 0 0 0 1px rgba(239,68,68,0.5), 0 0 24px rgba(239,68,68,0.16); }
+  .checkbox-btn { transition: transform 120ms ease, background-color 200ms ease, box-shadow 200ms ease, border-color 200ms ease; }
+  .checkbox-btn:active { transform: scale(0.94); }
+  .checkbox-btn.done { background: linear-gradient(135deg,#16a34a,#10b981); border-color: #22c55e; color: white; }
+  .checkbox-btn.done .check-mark { transform: scale(1) rotate(0deg); opacity: 1; }
+  .check-mark { transform: scale(0) rotate(-45deg); opacity: 0; transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 200ms ease; }
+  .xp-pop { position: absolute; pointer-events: none; font-weight: 800; color: #fbbf24; text-shadow: 0 2px 8px rgba(0,0,0,0.6); animation: xpPop 900ms ease-out forwards; }
+  @keyframes xpPop {
+    0%   { transform: translate(-50%, 0) scale(0.6); opacity: 0; }
+    20%  { transform: translate(-50%, -10px) scale(1.1); opacity: 1; }
+    100% { transform: translate(-50%, -60px) scale(0.9); opacity: 0; }
+  }
+  .pb-banner { animation: pbDrop 5s ease forwards; }
+  @keyframes pbDrop {
+    0%   { transform: translateY(-100%); opacity: 0; }
+    8%   { transform: translateY(0); opacity: 1; }
+    85%  { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100%); opacity: 0; }
+  }
+  .tier-pop { animation: tierPop 800ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes tierPop {
+    0%   { transform: scale(0.5) rotate(-15deg); opacity: 0; }
+    60%  { transform: scale(1.25) rotate(8deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .streak-pulse { animation: streakPulse 1.4s ease-in-out infinite; }
+  @keyframes streakPulse {
+    0%, 100% { text-shadow: 0 0 8px rgba(245,158,11,0.6); }
+    50%      { text-shadow: 0 0 18px rgba(245,158,11,0.9); }
+  }
+  .modal-bg { background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); }
+  .day-card { transition: all 240ms ease; }
+  .day-card.today { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.04)); border-color: rgba(245,158,11,0.4); }
+  .day-card.done { background: linear-gradient(135deg, rgba(34,197,94,0.10), rgba(34,197,94,0.02)); border-color: rgba(34,197,94,0.3); }
+  .day-card.partial { background: linear-gradient(135deg, rgba(234,179,8,0.10), rgba(234,179,8,0.02)); border-color: rgba(234,179,8,0.3); }
+  .day-card.missed { background: linear-gradient(135deg, rgba(239,68,68,0.10), rgba(239,68,68,0.02)); border-color: rgba(239,68,68,0.3); opacity: 0.85; }
+  .day-card.future { opacity: 0.55; }
+  .day-card.travel { border-color: rgba(168,85,247,0.45) !important; }
+  .topic-tile { transition: all 200ms ease; cursor: pointer; }
+  .topic-tile:hover { transform: translateY(-2px); }
+  .topic-tile.tier-master   { background: linear-gradient(135deg,#67e8f9,#06b6d4); color:#022c33; }
+  .topic-tile.tier-expert   { background: linear-gradient(135deg,#fde047,#eab308); color:#3b2a00; }
+  .topic-tile.tier-prac     { background: linear-gradient(135deg,#94a3b8,#64748b); color:#0b1220; }
+  .topic-tile.tier-app      { background: rgba(100,116,139,0.18); color:#cbd5e1; }
+  .sparkline-bar { transition: height 600ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .scrollbar-thin::-webkit-scrollbar { height: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.25); border-radius: 99px; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary { list-style: none; cursor: pointer; }
+  .ring-amber-soft { box-shadow: 0 0 0 4px rgba(245,158,11,0.18); }
+  @media (display-mode: standalone) { body { padding-top: env(safe-area-inset-top); } }
+</style>
+</head>
+<body class="min-h-screen pb-24">
+
+<!-- PB banner overlay -->
+<div id="pb-banner" class="hidden fixed top-0 inset-x-0 z-50 pb-banner">
+  <div class="mx-auto max-w-2xl m-3 p-4 rounded-2xl glass glow-amber text-center">
+    <div class="text-2xl font-black">🏆 NEW PERSONAL BEST!</div>
+    <div id="pb-banner-text" class="text-sm text-amber-200 mt-1"></div>
+  </div>
+</div>
+
+<!-- Tier promotion overlay -->
+<div id="tier-toast" class="hidden fixed bottom-6 inset-x-0 z-40 px-4">
+  <div class="mx-auto max-w-md p-3 rounded-2xl glass glow-purple flex items-center gap-3 tier-pop">
+    <span id="tier-toast-emoji" class="text-3xl">🥇</span>
+    <div>
+      <div class="text-sm uppercase tracking-wider text-purple-200">Tier promotion</div>
+      <div id="tier-toast-text" class="font-bold text-white"></div>
+    </div>
+  </div>
+</div>
+
+<main class="max-w-5xl mx-auto px-4 pt-5 sm:pt-8 space-y-6">
+
+  <!-- HEADER -->
+  <header class="flex items-center justify-between flex-wrap gap-3">
+    <div>
+      <div class="text-xs uppercase tracking-[0.18em] text-slate-400">Rayed S Rias • Sprint Dashboard</div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-white mt-0.5">June 6 SAT — 14-Day Sprint</h1>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="sync-chip" title="Sync status — click to configure" class="px-3 py-1.5 text-xs rounded-full glass hover:bg-slate-800/60">
+        <span id="sync-chip-label">⚫ Local-only</span>
+      </button>
+      <button id="who-am-i" title="Set whose device this is" class="px-3 py-1.5 text-xs rounded-full glass hover:bg-slate-800/60">
+        <span id="who-label">👤 Set viewer</span>
+      </button>
+      <button id="reset-btn" title="Reset all state on this device" class="px-3 py-1.5 text-xs rounded-full text-slate-400 hover:text-red-400 hover:bg-red-500/10">↺ Reset</button>
+    </div>
+  </header>
+
+  <!-- HERO STRIP -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="glass rounded-2xl p-4 flex flex-col items-center justify-center">
+      <div class="text-xs uppercase tracking-wider text-slate-400">Streak</div>
+      <div class="text-4xl font-black mt-1"><span id="streak-num" class="streak-pulse text-amber-400">0</span><span class="text-amber-400">⚡</span></div>
+      <div id="streak-sub" class="text-xs text-slate-400 mt-1">Tap both AM + PM</div>
+    </div>
+    <div class="glass rounded-2xl p-4 flex flex-col items-center justify-center">
+      <div class="text-xs uppercase tracking-wider text-slate-400">Days to Test</div>
+      <div class="text-4xl font-black mt-1 text-sky-300" id="days-to-test">—</div>
+      <div class="text-xs text-slate-400 mt-1">Sat Jun 6, 8 AM</div>
+    </div>
+    <div class="glass rounded-2xl p-4 flex flex-col items-center justify-center">
+      <div class="text-xs uppercase tracking-wider text-slate-400">Total XP</div>
+      <div class="text-4xl font-black mt-1 text-emerald-300" id="xp-num">0</div>
+      <div class="text-xs text-slate-400 mt-1" id="xp-sub">Level 1</div>
+    </div>
+    <div class="glass rounded-2xl p-4 flex flex-col items-center justify-center">
+      <div class="text-xs uppercase tracking-wider text-slate-400">Next Reward</div>
+      <div class="text-base font-extrabold mt-1 text-fuchsia-300 text-center leading-tight" id="next-reward">—</div>
+      <div class="text-xs text-slate-400 mt-1" id="next-reward-sub">in — days</div>
+    </div>
+  </section>
+
+  <!-- TODAY CARD -->
+  <section id="today-card" class="rounded-3xl p-5 glass glow-amber">
+    <div class="flex items-center justify-between gap-3 flex-wrap">
+      <div>
+        <div class="text-xs uppercase tracking-wider text-amber-200">Today</div>
+        <h2 class="text-2xl font-extrabold text-white" id="today-title">—</h2>
+        <p id="today-quote" class="text-sm text-slate-300 mt-1 italic max-w-xl"></p>
+      </div>
+      <div id="today-badges" class="flex gap-2 flex-wrap"></div>
+    </div>
+    <div id="today-blocks" class="grid sm:grid-cols-2 gap-3 mt-4"></div>
+  </section>
+
+  <!-- 14-DAY CALENDAR -->
+  <section>
+    <div class="flex items-end justify-between mb-3 gap-3 flex-wrap">
+      <h2 class="text-lg font-bold text-white">14-Day Plan</h2>
+      <div class="text-xs text-slate-400 flex flex-wrap gap-3">
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span>Today</span>
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>Done</span>
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-yellow-500"></span>Partial</span>
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span>Missed</span>
+        <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-400"></span>NOLA</span>
+      </div>
+    </div>
+    <div id="calendar" class="space-y-2"></div>
+  </section>
+
+  <!-- PRACTICE TEST PB LEADERBOARD -->
+  <section class="rounded-3xl p-5 glass">
+    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+      <div>
+        <h2 class="text-lg font-bold text-white">🏆 Personal Best Leaderboard</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Math sub-section trajectory matters most. Algebra/Advanced Math = strong (push ceiling). PS&amp;DA + Geo/Trig = Tier-1 focus.</p>
+      </div>
+      <button id="update-scores-btn" class="px-3 py-1.5 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 border border-emerald-500/30">+ Log a Test</button>
+    </div>
+    <div class="overflow-x-auto scrollbar-thin">
+      <table class="w-full text-sm min-w-[480px]">
+        <thead class="text-slate-400 text-xs uppercase tracking-wider">
+          <tr><th class="text-left py-2 pr-3">Test</th><th class="text-right px-2">Math</th><th class="text-right px-2">R&amp;W</th><th class="text-right px-2">Total</th><th class="text-right pl-2">vs March</th></tr>
+        </thead>
+        <tbody id="pb-table"></tbody>
+      </table>
+    </div>
+    <div class="mt-4 flex items-end gap-1 h-20 px-2" id="sparkline" title="Math score trajectory"></div>
+    <div class="text-xs text-center text-slate-500 mt-1">Math score trajectory · target 720–760</div>
+  </section>
+
+  <!-- TOPIC MASTERY -->
+  <section class="rounded-3xl p-5 glass">
+    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+      <div>
+        <h2 class="text-lg font-bold text-white">🎯 Topic Mastery — Tier 1 Targets</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Tap any tile to enter your latest UWorld accuracy. Tier promotes automatically. 🥉 &lt;50% • 🥈 50-69% • 🥇 70-84% • 💎 85%+</p>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <div class="text-sm font-semibold text-purple-200 mb-2">Problem-Solving &amp; Data Analysis</div>
+        <div id="topics-psda" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+      </div>
+      <div>
+        <div class="text-sm font-semibold text-cyan-200 mb-2">Geometry &amp; Trigonometry</div>
+        <div id="topics-geotrig" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TUTOR SESSIONS -->
+  <section class="rounded-3xl p-5 glass">
+    <h2 class="text-lg font-bold text-white mb-3">📞 Tutor Sessions (Prep Expert Unlimited Prep — Order #378021)</h2>
+    <div id="tutor-strip" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+    <div class="text-xs text-slate-500 mt-3">10 hr total · 8 hr scheduled (4 × 2-hr) · <span class="text-slate-300">2 hr held in reserve</span> for post-test or Aug 22</div>
+  </section>
+
+  <!-- REWARDS -->
+  <section class="rounded-3xl p-5 glass">
+    <h2 class="text-lg font-bold text-white mb-3">🎁 Streak Rewards (Rayed picks)</h2>
+    <div id="rewards-list" class="space-y-2"></div>
+    <p class="text-xs text-slate-500 mt-3">Type what you want into each box. Reward unlocks the day you hit the streak. Mom + Dad honor the pick — no substitutions.</p>
+  </section>
+
+  <!-- PRE-TEST CHECKLIST (Days 13-14) -->
+  <section id="pretest-card" class="rounded-3xl p-5 glass hidden">
+    <h2 class="text-lg font-bold text-white mb-3">✅ Pre-Test Checklist (Friday Jun 5)</h2>
+    <div id="pretest-list" class="grid sm:grid-cols-2 gap-2"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="text-center text-xs text-slate-500 pt-6 pb-2">
+    <div class="space-y-1">
+      <div>March 10, 2026 anchor — Math <strong class="text-slate-300">680</strong> (PS&amp;DA 610-670 • Geo/Trig 610-670) · R&amp;W <strong class="text-slate-300">740</strong> · Total <strong class="text-slate-300">1420</strong>.</div>
+      <div>Sprint plan: <code>JUNE-6-SAT-MATH-SPRINT_14-Day-Timeline_2026-05-23.md</code> · Handoff: <code>PREP-EXPERT-004</code></div>
+      <div class="opacity-60">v1.2 · State persists locally (+ optional Sheet sync) · Built 2026-05-23</div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- SCORE ENTRY MODAL -->
+<div id="score-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+  <div class="glass rounded-3xl p-6 max-w-md w-full">
+    <h3 class="text-xl font-bold text-white mb-1">Log a practice test</h3>
+    <p class="text-xs text-slate-400 mb-4">+200 XP · +500 XP bonus if it's a new Personal Best on Math</p>
+    <label class="text-xs uppercase tracking-wider text-slate-400">Which test?</label>
+    <select id="score-which" class="w-full mt-1 mb-3 px-3 py-2 rounded-xl bg-slate-800/70 border border-slate-700 text-white">
+      <option value="diag">#1 Diagnostic (Sun May 24)</option>
+      <option value="mid">#2 Mid-Sprint (Fri May 29 pre-flight)</option>
+      <option value="dress">#3 Dress Rehearsal (Thu Jun 4)</option>
+      <option value="real">REAL SAT (Sat Jun 6)</option>
+    </select>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="text-xs uppercase tracking-wider text-slate-400">Math</label>
+        <input id="score-math" type="number" min="200" max="800" step="10" placeholder="e.g. 720" class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-800/70 border border-slate-700 text-white" />
+      </div>
+      <div>
+        <label class="text-xs uppercase tracking-wider text-slate-400">R&amp;W</label>
+        <input id="score-rw" type="number" min="200" max="800" step="10" placeholder="e.g. 740" class="w-full mt-1 px-3 py-2 rounded-xl bg-slate-800/70 border border-slate-700 text-white" />
+      </div>
+    </div>
+    <div class="mt-2 text-xs text-slate-500">Total auto-computed: <span id="score-total" class="text-white font-bold">—</span></div>
+    <div class="mt-5 flex gap-2 justify-end">
+      <button id="score-cancel" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Cancel</button>
+      <button id="score-save" class="px-4 py-2 text-sm rounded-xl bg-emerald-500 text-slate-900 font-bold hover:bg-emerald-400">Save score</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOPIC EDIT MODAL -->
+<div id="topic-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+  <div class="glass rounded-3xl p-6 max-w-sm w-full">
+    <h3 id="topic-modal-title" class="text-xl font-bold text-white mb-1">Topic</h3>
+    <p class="text-xs text-slate-400 mb-4">Enter your latest UWorld accuracy %. Tier updates instantly.</p>
+    <input id="topic-pct" type="number" min="0" max="100" step="1" class="w-full px-3 py-2 rounded-xl bg-slate-800/70 border border-slate-700 text-white text-xl text-center" />
+    <div class="mt-2 text-xs text-slate-500 text-center" id="topic-tier-preview">—</div>
+    <div class="mt-5 flex gap-2 justify-end">
+      <button id="topic-cancel" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Cancel</button>
+      <button id="topic-save" class="px-4 py-2 text-sm rounded-xl bg-purple-500 text-white font-bold hover:bg-purple-400">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- WHO MODAL -->
+<div id="who-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+  <div class="glass rounded-3xl p-6 max-w-sm w-full">
+    <h3 class="text-xl font-bold text-white mb-1">Whose device is this?</h3>
+    <p class="text-xs text-slate-400 mb-4">Just a friendly label — doesn't change your state.</p>
+    <div class="grid grid-cols-3 gap-2">
+      <button data-who="rayed" class="who-pick px-3 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 text-sm font-bold">🎓 Rayed</button>
+      <button data-who="naznee" class="who-pick px-3 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 text-sm font-bold">💛 Naznee</button>
+      <button data-who="rias" class="who-pick px-3 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 text-sm font-bold">👤 Rias</button>
+    </div>
+    <div class="mt-4 text-right">
+      <button id="who-cancel" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- SYNC MODAL -->
+<div id="sync-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+  <div class="glass rounded-3xl p-6 max-w-md w-full">
+    <h3 class="text-xl font-bold text-white mb-1">Sync settings</h3>
+    <p class="text-xs text-slate-400 mb-4">Paste your Apps Script Web App <code>/exec</code> URL to sync state across devices. Leave blank for local-only.</p>
+    <label class="text-xs uppercase tracking-wider text-slate-400">Apps Script Web App URL</label>
+    <input id="sync-url-input" type="url" placeholder="https://script.google.com/macros/s/AKfycby.../exec" class="w-full mt-1 mb-3 px-3 py-2 rounded-xl bg-slate-800/70 border border-slate-700 text-white text-xs font-mono" />
+    <div id="sync-status-detail" class="text-xs text-slate-500 mb-4">Status: —</div>
+    <details class="text-xs text-slate-400 mb-4">
+      <summary class="cursor-pointer text-slate-300">How do I get this URL?</summary>
+      <div class="mt-2 space-y-1">
+        <div>1. Open the Sheet <code>Rayed SAT Sprint - Shared State</code> (auto-created in Drive).</div>
+        <div>2. Extensions → Apps Script → paste <code>sat-sprint-backend.gs</code>.</div>
+        <div>3. Deploy → New deployment → Web app → "Anyone, even anonymous" → Deploy.</div>
+        <div>4. Copy the <code>/exec</code> URL → paste above → Save.</div>
+        <div>Full guide in <code>SHEET-BACKEND-SETUP.md</code>.</div>
+      </div>
+    </details>
+    <div class="flex gap-2 justify-end">
+      <button id="sync-clear" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Clear</button>
+      <button id="sync-cancel" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Cancel</button>
+      <button id="sync-save" class="px-4 py-2 text-sm rounded-xl bg-emerald-500 text-slate-900 font-bold hover:bg-emerald-400">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET MODAL -->
+<div id="reset-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+  <div class="glass rounded-3xl p-6 max-w-sm w-full text-center">
+    <h3 class="text-xl font-bold text-white mb-2">Reset everything?</h3>
+    <p class="text-sm text-slate-400 mb-5">This clears checkboxes, scores, mastery, rewards, and XP on <em>this device only</em>. Other devices keep their state.</p>
+    <div class="flex gap-2 justify-center">
+      <button id="reset-cancel" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Cancel</button>
+      <button id="reset-confirm" class="px-4 py-2 text-sm rounded-xl bg-red-500 text-white font-bold hover:bg-red-400">Yes, reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================================================
+// DATA
+// =============================================================================
+
+const SPRINT_START = new Date('2026-05-24T00:00:00'); // Day 1 (local time)
+const TEST_DATE    = new Date('2026-06-06T08:00:00'); // Sat Jun 6, 8 AM
+
+const QUOTES = [
+  "You're not behind. You're in the right place to start.",
+  "The two domains we attack today are 30% of the test. That's leverage.",
+  "Tier promotion comes from reps, not from talent. Stack the reps.",
+  "Confidence is a side effect of preparation. Earn it today.",
+  "Hard now, easy later. Easy now, hard later. Pick.",
+  "The diagnostic isn't a verdict — it's a map.",
+  "Every error logged today is a point saved on June 6.",
+  "Desmos is free points. Use it on every multi-step problem.",
+  "Two blocks. Two checkmarks. That's a streak day.",
+  "Math doesn't care how you feel about it. Practice does.",
+  "Practitioner → Expert is the most expensive tier to skip. Don't.",
+  "Algebra is your floor. PS&DA + Geo/Trig is where the points hide.",
+  "A 740 R&W only needs maintenance. Don't over-feed it.",
+  "If a question takes > 90 sec on the test, flag it and move.",
+  "You're at the 89th percentile in math already. We're going for the 95th.",
+  "Sleep is a study tool. Friday Jun 5 in bed by 10.",
+  "Hard problems are puzzles. Approach them like a game, not an exam.",
+  "Your IB finals trained you for endurance. The SAT is a sprint by comparison.",
+  "Streak is sacred. Don't let yesterday turn red.",
+  "Show up. Just show up. That alone beats 80% of test-takers.",
+];
+
+const REWARDS = [
+  { day: 3,  label: "Pick a reward — Rayed picks",                          key: "r3"  },
+  { day: 6,  label: "Pick a NOLA-themed reward — Rayed picks",              key: "r6"  },
+  { day: 8,  label: "Tutor #3 done — halfway home; Rayed picks",            key: "r8"  },
+  { day: 10, label: "Pick a reward — Rayed picks",                          key: "r10" },
+  { day: 13, label: "👑 BIG pick — Rayed defines it",                       key: "r13" },
+];
+
+const TUTORS = [
+  { n: 1, date: "Tue May 26", iso: "2026-05-26", focus: "Top PS&DA gap (from Test #1)" },
+  { n: 2, date: "Thu May 28", iso: "2026-05-28", focus: "Geo/Trig OR 2nd PS&DA gap" },
+  { n: 3, date: "Sun May 31", iso: "2026-05-31", focus: "Test #2 residuals — highest leverage", nola: true },
+  { n: 4, date: "Tue Jun 2",  iso: "2026-06-02", focus: "Test-day strategy + final weak topics" },
+];
+
+const PSDA_TOPICS = [
+  { id: 'psda_scatter',  label: 'Scatterplots' },
+  { id: 'psda_twoway',   label: 'Two-way tables' },
+  { id: 'psda_percent',  label: 'Percentages' },
+  { id: 'psda_ratio',    label: 'Ratios & rates' },
+  { id: 'psda_stats',    label: 'Mean/median/range' },
+  { id: 'psda_prob',     label: 'Probability' },
+];
+const GEOTRIG_TOPICS = [
+  { id: 'gt_circle',   label: 'Circles & equations' },
+  { id: 'gt_triangle', label: 'Triangles' },
+  { id: 'gt_righttri', label: 'Right-tri SOHCAHTOA' },
+  { id: 'gt_area',     label: 'Area & volume' },
+  { id: 'gt_radian',   label: 'Radians + unit circle' },
+  { id: 'gt_angle',    label: 'Angles & parallel lines' },
+];
+
+// Full 14-day schedule. Day 1 = Sun May 24 → Day 14 = Sat Jun 6
+const SCHEDULE = [
+  { d:1, date:"Sun May 24", dow:"Sun", title:"Diagnostic + activation 🚀",
+    am:{ title:"Bluebook Practice Test #1", desc:"Full-length, test conditions. Phone away, official breaks only.", tag:"TEST", icon:"📝" },
+    pm:{ title:"Score + activate stack", desc:"Build weak-topics list • Activate UWorld + 1600.io • Confirm Bluebook/Zoom • Send Kristyl reply email", icon:"🛠️" },
+    note:"Day 1 success = diagnostic done + stack live + Kristyl email sent." },
+  { d:2, date:"Mon May 25", dow:"Mon", title:"Memorial Day — Self-paced PS&DA (PE closed)",
+    am:{ title:"1600.io PS&DA modules", desc:"Ratios • Rates • Percent • Scatterplots", icon:"📘" },
+    pm:{ title:"UWorld PS&DA + R&W maintenance", desc:"40-question PS&DA set (20 untimed, 20 timed) + 30 min R&W", icon:"🎯" } },
+  { d:3, date:"Tue May 26", dow:"Tue", title:"Tutor Session #1 ⭐",
+    am:{ title:"1600.io priming + Bluebook math module", desc:"Prep for what tutor will cover", icon:"📘" },
+    pm:{ title:"Tutor session #1 (2 hr) + drill", desc:"Top PS&DA gap • Followed by 30 min UWorld on same topic", tag:"TUTOR", icon:"📞" },
+    note:"3-day streak reward unlocks: dinner pick." },
+  { d:4, date:"Wed May 27", dow:"Wed", title:"Geo/Trig depth (soft make-up)",
+    am:{ title:"1600.io Geo/Trig modules", desc:"Angles • Triangles • Area • Volume • Basic SOHCAHTOA", icon:"📐" },
+    pm:{ title:"UWorld Geo + 2 Bluebook math modules", desc:"Deliberate Desmos use. Soft make-up zone: +1 hr PS&DA if behind", icon:"🎯" } },
+  { d:5, date:"Thu May 28", dow:"Thu", title:"Tutor Session #2 ⭐",
+    am:{ title:"1600.io priming + R&W maintenance", desc:"Geo/Trig prep OR PS&DA round 2", icon:"📘" },
+    pm:{ title:"Tutor session #2 (2 hr) + Desmos drill", desc:"Tier-1 weak topic deep dive", tag:"TUTOR", icon:"📞" } },
+  { d:6, date:"Fri May 29", dow:"Fri", title:"Practice Test #2 + Travel to NOLA ✈️",
+    am:{ title:"Bluebook Practice Test #2", desc:"Full-length pre-flight. Finish by ~1 PM.", tag:"TEST", icon:"📝" },
+    pm:{ title:"Score in NOLA + airport review", desc:"Light UWorld on phone in transit. Flight TPA 6:15 PM → MSY 6:53 PM (Breeze MX341, conf DDZV7E).", tag:"TRAVEL", icon:"✈️" },
+    travel:true, note:"6-day streak reward unlocks: NOLA activity pick." },
+  { d:7, date:"Sat May 30", dow:"Sat", title:"NOLA — Test #2 review + Tier 1 drill",
+    am:{ title:"Item-by-item Test #2 math review", desc:"Tag every miss by subdomain + concept + reason. Build residuals list for Tutor #3.", icon:"🔍" },
+    pm:{ title:"UWorld targeted drill on residuals", desc:"Top 2 residual topics. Hotel Wi-Fi.", icon:"🎯" },
+    travel:true },
+  { d:8, date:"Sun May 31", dow:"Sun", title:"NOLA — Tutor Session #3 ⭐ (highest leverage)",
+    am:{ title:"1600.io advanced math + R&W timed module", desc:"Send residuals list to tutor before session.", icon:"📘" },
+    pm:{ title:"Tutor session #3 via Zoom (2 hr)", desc:"Residuals from Test #2. Quiet hotel room, headphones, door closed.", tag:"TUTOR", icon:"📞" },
+    travel:true, note:"8-day streak reward unlocks: Rayed picks." },
+  { d:9, date:"Mon Jun 1", dow:"Mon", title:"NOLA → TPA — Light study (~3-4 hr realistic)",
+    am:{ title:"R&W maintenance + formula card + 15 UWorld Qs", desc:"~1.5 hr before flight", tag:"TRAVEL", icon:"✈️" },
+    pm:{ title:"UWorld light drill at home post-landing", desc:"~1.5 hr on whatever was weakest in Tutor #3", icon:"🎯" },
+    travel:true },
+  { d:10, date:"Tue Jun 2", dow:"Tue", title:"Tutor Session #4 ⭐ — strategy + final weak",
+    am:{ title:"Bluebook math modules timed (2) + R&W timed", desc:"Test-day pacing rehearsal", icon:"📝" },
+    pm:{ title:"Tutor session #4 (2 hr) + Desmos final", desc:"Half on residual topics, half on test-day strategy", tag:"TUTOR", icon:"📞" },
+    note:"10-day streak reward unlocks: Rayed picks." },
+  { d:11, date:"Wed Jun 3", dow:"Wed", title:"Consolidation (HARD make-up zone)",
+    am:{ title:"1600.io final review + UWorld light drill", desc:"20 Qs mixed math, timed", icon:"📘" },
+    pm:{ title:"R&W timed + personal formula card", desc:"Can absorb +3 hr catch-up if behind", icon:"🎯" } },
+  { d:12, date:"Thu Jun 4", dow:"Thu", title:"DRESS REHEARSAL — Practice Test #3 🎯",
+    am:{ title:"Bluebook Practice Test #3 — 8 AM start", desc:"Match real test-day muscle memory. Breakfast, breaks, no phone.", tag:"TEST", icon:"📝" },
+    pm:{ title:"Score + targeted review", desc:"NO new content. Pack for Friday.", icon:"🔍" } },
+  { d:13, date:"Fri Jun 5", dow:"Fri", title:"Light review + test logistics",
+    am:{ title:"Formula card + Desmos shortcuts + error patterns", desc:"~1 hr formal review only", icon:"📘" },
+    pm:{ title:"Test-day logistics", desc:"Admission ticket • ID • TI-84 charged + batteries • snacks • route • alarm 6:30 AM • in bed 10 PM", icon:"✅" },
+    note:"13/13 streak reward unlocks: BIG pick." },
+  { d:14, date:"Sat Jun 6", dow:"Sat", title:"🎯 TEST DAY",
+    am:{ title:"SAT — 8:00 AM start", desc:"6:30 wake • 7:00 leave • 7:30 at center", tag:"TEST", icon:"🎯" },
+    pm:{ title:"Celebrate", desc:"Lunch out — regardless of how it went.", icon:"🎉" },
+    test:true },
+];
+
+const PRETEST = [
+  "Admission ticket printed + phone wallet",
+  "Photo ID",
+  "TI-84 charged + 4 spare AAA batteries",
+  "#2 pencils + eraser (backup)",
+  "Testing device fully charged + charger",
+  "Water bottle (clear, label off)",
+  "Snacks (protein bar / fruit, no crinkle)",
+  "Layered clothing",
+  "Analog watch (no smart watch)",
+  "Test center route timed + backup",
+  "Alarm set 6:30 AM",
+  "In bed by 10 PM",
+];
+
+// =============================================================================
+// STATE
+// =============================================================================
+
+const LS_KEY = 'sat-sprint-v1';
+const DEFAULT_STATE = {
+  who: null,         // 'rayed' | 'naznee' | 'rias'
+  checks: {},        // { 'd1_am': true, 'd1_pm': true, ... }
+  scores: {},        // { diag: {m:..., rw:...}, mid: {...}, dress: {...}, real: {...} }
+  topics: {},        // { 'psda_scatter': 65, ... }  (percent)
+  rewards: {         // editable text — Rayed picks each reward
+    r3:  "",
+    r6:  "",
+    r8:  "",
+    r10: "",
+    r13: "",
+  },
+  timestamps: {},    // per-key last-modified ms; populated by touch() for sync
+  rewardsClaimed: {},     // { r3: true, ... }
+  tutorsDone: {},         // { 1: true, ... }
+  pretest: {},            // { 0: true, 1: true, ... }
+  streakFreezeUsed: false,
+  xp: 0,
+  xpAwarded: {},          // dedupe key-set so we don't double-award
+};
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    const parsed = JSON.parse(raw);
+    const merged = Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), parsed);
+    if (!merged.timestamps || typeof merged.timestamps !== 'object') merged.timestamps = {};
+    return merged;
+  } catch (e) {
+    return JSON.parse(JSON.stringify(DEFAULT_STATE));
+  }
+}
+function saveState() { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+function touch(key) {
+  state.timestamps = state.timestamps || {};
+  state.timestamps[key] = Date.now();
+  if (typeof syncManager !== 'undefined') syncManager.scheduleSyncPush();
+}
+
+// =============================================================================
+// SYNC LAYER (optional Google Apps Script Web App backend)
+// =============================================================================
+
+class SyncManager {
+  constructor() {
+    this.url = localStorage.getItem('sat-sprint-sync-url') || '';
+    this.status = this.url ? 'syncing' : 'unset';
+    this.pushTimer = null;
+    this.pollTimer = null;
+    this.statusListeners = [];
+  }
+  setUrl(u) {
+    u = (u || '').trim();
+    if (u && !/^https:\/\/script\.google\.com\/.*\/exec/.test(u)) {
+      throw new Error('That does not look like a Google Apps Script /exec URL.');
+    }
+    this.url = u;
+    if (u) localStorage.setItem('sat-sprint-sync-url', u);
+    else localStorage.removeItem('sat-sprint-sync-url');
+    this.setStatus(u ? 'syncing' : 'unset');
+    if (u) { this.pull().then(() => this.pushNow()); this.startPolling(); }
+    else { this.stopPolling(); }
+  }
+  setStatus(s) { this.status = s; this.statusListeners.forEach(fn => fn(s)); }
+  onStatus(fn) { this.statusListeners.push(fn); fn(this.status); }
+  startPolling() {
+    this.stopPolling();
+    this.pollTimer = setInterval(() => this.pull(), 60 * 1000);
+  }
+  stopPolling() { if (this.pollTimer) { clearInterval(this.pollTimer); this.pollTimer = null; } }
+  scheduleSyncPush() {
+    if (!this.url) return;
+    if (this.pushTimer) clearTimeout(this.pushTimer);
+    this.pushTimer = setTimeout(() => this.pushNow(), 1500);
+  }
+  async pushNow() {
+    if (!this.url) return;
+    this.setStatus('syncing');
+    try {
+      const body = JSON.stringify({ state: stripStateForSync(state), timestamps: state.timestamps || {} });
+      const res = await fetch(this.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      this.mergeRemote(data);
+      this.setStatus('synced');
+    } catch (e) {
+      console.warn('Sync push failed:', e);
+      this.setStatus('offline');
+    }
+  }
+  async pull() {
+    if (!this.url) return;
+    this.setStatus('syncing');
+    try {
+      const res = await fetch(this.url, { method: 'GET' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      this.mergeRemote(data);
+      this.setStatus('synced');
+    } catch (e) {
+      console.warn('Sync pull failed:', e);
+      this.setStatus('offline');
+    }
+  }
+  mergeRemote(data) {
+    if (!data || !data.state) return;
+    const remoteState = data.state, remoteTs = data.timestamps || {};
+    let changed = false;
+    Object.keys(remoteState).forEach(k => {
+      const remoteAt = Number(remoteTs[k]) || 0;
+      const localAt  = Number((state.timestamps || {})[k]) || 0;
+      if (remoteAt > localAt) {
+        state[k] = remoteState[k];
+        state.timestamps = state.timestamps || {};
+        state.timestamps[k] = remoteAt;
+        changed = true;
+      }
+    });
+    if (changed) {
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
+      renderAll();
+    }
+  }
+}
+
+function stripStateForSync(s) {
+  const out = {};
+  ['who','checks','scores','topics','rewards','rewardsClaimed','tutorsDone','pretest','streakFreezeUsed','xp','xpAwarded']
+    .forEach(k => { out[k] = s[k]; });
+  return out;
+}
+
+const syncManager = new SyncManager();
+
+// =============================================================================
+// XP + STREAK + LEVEL
+// =============================================================================
+
+function awardXP(amount, key, fromEl) {
+  touch('xp'); touch('xpAwarded');
+  if (key) {
+    if (state.xpAwarded[key]) return;
+    state.xpAwarded[key] = true;
+  }
+  state.xp += amount;
+  saveState();
+  renderHero();
+  if (fromEl) xpPopAt(fromEl, '+'+amount+' XP');
+}
+function refundXP(amount, key) {
+  if (key && state.xpAwarded[key]) {
+    touch('xp'); touch('xpAwarded');
+    delete state.xpAwarded[key];
+    state.xp = Math.max(0, state.xp - amount);
+    saveState();
+    renderHero();
+  }
+}
+
+function xpPopAt(el, text) {
+  const r = el.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className = 'xp-pop';
+  pop.style.left = (r.left + r.width/2) + 'px';
+  pop.style.top  = (r.top + window.scrollY) + 'px';
+  pop.textContent = text;
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 900);
+}
+
+function currentStreak() {
+  // Streak = consecutive days from Day 1 onward where BOTH am+pm are checked,
+  // counting up to (and including) today if today is done, otherwise stopping at yesterday.
+  const today = currentDayIndex(); // 1-based; 0 if before sprint, 15+ if after
+  let streak = 0;
+  for (let d = 1; d <= 14; d++) {
+    if (d > today) break;
+    const am = state.checks['d'+d+'_am'];
+    const pm = state.checks['d'+d+'_pm'];
+    if (am && pm) streak++;
+    else if (d === today) {
+      // today not complete yet — don't reset, just stop counting
+      break;
+    } else {
+      streak = 0; // missed a previous day, chain broken
+    }
+  }
+  return streak;
+}
+
+function level(xp) { return Math.floor(xp / 500) + 1; }
+function xpToNext(xp) { return 500 - (xp % 500); }
+
+// =============================================================================
+// DATE LOGIC
+// =============================================================================
+
+function startOfDay(d) { const x = new Date(d); x.setHours(0,0,0,0); return x; }
+function daysBetween(a, b) {
+  const A = startOfDay(a).getTime(), B = startOfDay(b).getTime();
+  return Math.round((B - A) / 86400000);
+}
+function currentDayIndex() {
+  const today = new Date();
+  const diff = daysBetween(SPRINT_START, today);
+  return diff + 1; // Day 1 = Sun May 24
+}
+function daysToTest() {
+  return Math.max(0, daysBetween(new Date(), TEST_DATE));
+}
+
+// =============================================================================
+// RENDER — HERO
+// =============================================================================
+
+function renderHero() {
+  const streak = currentStreak();
+  document.getElementById('streak-num').textContent = streak;
+  document.getElementById('streak-sub').textContent =
+    streak >= 13 ? "13/13 — legend." :
+    streak >= 1  ? "Don't break the chain" :
+    "Tap both AM + PM";
+
+  document.getElementById('days-to-test').textContent = daysToTest();
+  document.getElementById('xp-num').textContent = state.xp;
+  const lvl = level(state.xp);
+  document.getElementById('xp-sub').textContent = `Level ${lvl} · ${xpToNext(state.xp)} XP to next`;
+
+  const nextReward = REWARDS.find(r => streak < r.day);
+  const nextRewardEl = document.getElementById('next-reward');
+  const nextRewardSub = document.getElementById('next-reward-sub');
+  if (nextReward) {
+    nextRewardEl.textContent = nextReward.label;
+    nextRewardSub.textContent = `${nextReward.day - streak} more streak day${nextReward.day - streak === 1 ? '' : 's'}`;
+  } else {
+    nextRewardEl.textContent = "🏆 ALL UNLOCKED";
+    nextRewardSub.textContent = "Test day = ultimate boss";
+  }
+}
+
+// =============================================================================
+// RENDER — TODAY CARD
+// =============================================================================
+
+function renderToday() {
+  const idx = currentDayIndex();
+  const card = document.getElementById('today-card');
+  const titleEl = document.getElementById('today-title');
+  const quoteEl = document.getElementById('today-quote');
+  const blocksEl = document.getElementById('today-blocks');
+  const badgesEl = document.getElementById('today-badges');
+
+  blocksEl.innerHTML = '';
+  badgesEl.innerHTML = '';
+
+  if (idx < 1) {
+    titleEl.textContent = `Sprint starts Sun May 24`;
+    quoteEl.textContent = `T-${Math.abs(idx) + 1} day${Math.abs(idx) === 0 ? '' : 's'} until Day 1. Get the Bluebook test ready.`;
+    card.classList.remove('glow-amber');
+    card.classList.add('glow-purple');
+    return;
+  }
+  if (idx > 14) {
+    titleEl.textContent = `Sprint complete. SAT was Saturday.`;
+    quoteEl.textContent = `Log the real score above. Then plan the Aug 22 cycle.`;
+    card.classList.remove('glow-amber');
+    return;
+  }
+  const day = SCHEDULE[idx - 1];
+  titleEl.innerHTML = `Day ${idx}/14 · ${day.date} — <span class="text-amber-200">${day.title}</span>`;
+  const qIdx = (idx - 1) % QUOTES.length;
+  quoteEl.textContent = `"${QUOTES[qIdx]}"`;
+
+  if (day.am.tag === 'TEST' || day.pm.tag === 'TEST') {
+    badgesEl.innerHTML += `<span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">📝 Test day</span>`;
+  }
+  if (day.am.tag === 'TUTOR' || day.pm.tag === 'TUTOR') {
+    badgesEl.innerHTML += `<span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">📞 Tutor</span>`;
+  }
+  if (day.travel) {
+    badgesEl.innerHTML += `<span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-purple-500/20 text-purple-200 border border-purple-500/30">✈️ NOLA</span>`;
+  }
+  blocksEl.appendChild(makeBlockBtn(idx, 'am', day.am));
+  blocksEl.appendChild(makeBlockBtn(idx, 'pm', day.pm));
+}
+
+function makeBlockBtn(dayNum, slot, blk) {
+  const key = `d${dayNum}_${slot}`;
+  const done = !!state.checks[key];
+  const wrap = document.createElement('button');
+  wrap.className = `checkbox-btn relative text-left p-4 rounded-2xl border ${done ? 'done glow-green' : 'border-slate-700/60 bg-slate-900/40 hover:bg-slate-800/60'}`;
+  wrap.innerHTML = `
+    <div class="flex items-start gap-3">
+      <div class="shrink-0 w-9 h-9 rounded-xl ${done ? 'bg-white/15' : 'bg-slate-800/80'} flex items-center justify-center text-lg">
+        ${done ? `<span class="check-mark text-xl">✓</span>` : (blk.icon || '○')}
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[10px] uppercase tracking-wider ${done ? 'text-white/70' : 'text-slate-400'}">${slot === 'am' ? 'AM block · 2.5 hr' : 'PM block · 2.5 hr'}</div>
+        <div class="text-sm font-bold ${done ? 'text-white' : 'text-slate-100'} leading-tight">${blk.title}</div>
+        <div class="text-xs ${done ? 'text-white/70' : 'text-slate-400'} mt-1 leading-snug">${blk.desc}</div>
+      </div>
+    </div>
+  `;
+  wrap.addEventListener('click', () => toggleBlock(dayNum, slot, wrap));
+  return wrap;
+}
+
+function toggleBlock(dayNum, slot, el) {
+  const key = `d${dayNum}_${slot}`;
+  const xpKey = 'xp_' + key;
+  touch('checks');
+  if (state.checks[key]) {
+    delete state.checks[key];
+    refundXP(25, xpKey);
+  } else {
+    state.checks[key] = true;
+    awardXP(25, xpKey, el);
+    // streak milestone check (both am+pm done for today and on a milestone)
+    const streakAfter = currentStreak();
+    REWARDS.forEach(r => {
+      if (streakAfter === r.day && !state.rewardsClaimed[r.key]) {
+        touch('rewardsClaimed');
+        state.rewardsClaimed[r.key] = true;
+        confetti({ particleCount: 140, spread: 80, origin: { y: 0.4 } });
+        showPbBanner(`🎉 ${r.day}-day streak! Reward unlocked.`);
+        awardXP(r.day === 13 ? 1000 : 200, 'reward_' + r.key);
+      }
+    });
+    if (streakAfter === 13) {
+      // double celebration
+      setTimeout(()=> confetti({ particleCount: 220, spread: 120, origin: { y: 0.5 } }), 400);
+      setTimeout(()=> confetti({ particleCount: 220, spread: 120, origin: { y: 0.5 } }), 900);
+    }
+  }
+  saveState();
+  renderAll();
+}
+
+// =============================================================================
+// RENDER — CALENDAR
+// =============================================================================
+
+function dayState(dayNum) {
+  const am = !!state.checks['d'+dayNum+'_am'];
+  const pm = !!state.checks['d'+dayNum+'_pm'];
+  const today = currentDayIndex();
+  if (am && pm) return 'done';
+  if (dayNum === today) return 'today';
+  if (dayNum > today) return 'future';
+  if (am || pm) return 'partial';
+  return 'missed';
+}
+
+function renderCalendar() {
+  const root = document.getElementById('calendar');
+  root.innerHTML = '';
+  SCHEDULE.forEach(day => {
+    const cls = dayState(day.d);
+    const card = document.createElement('details');
+    card.className = `day-card ${cls} ${day.travel ? 'travel' : ''} rounded-2xl border border-slate-700/40 bg-slate-900/30 overflow-hidden`;
+    card.open = (cls === 'today');
+    card.innerHTML = `
+      <summary class="p-3 sm:p-4 flex items-center gap-3">
+        <div class="shrink-0 w-10 h-10 rounded-xl bg-slate-800/70 flex items-center justify-center font-extrabold text-slate-200 text-lg">${day.d}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-xs text-slate-400">${day.date}${day.travel ? ' · NOLA' : ''}</div>
+          <div class="text-sm font-bold text-white truncate">${day.title}</div>
+        </div>
+        <div class="flex gap-1.5 shrink-0">
+          <span class="cal-dot inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold ${state.checks['d'+day.d+'_am'] ? 'bg-emerald-500 text-slate-900' : 'bg-slate-800 text-slate-500'}">AM</span>
+          <span class="cal-dot inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-bold ${state.checks['d'+day.d+'_pm'] ? 'bg-emerald-500 text-slate-900' : 'bg-slate-800 text-slate-500'}">PM</span>
+        </div>
+      </summary>
+      <div class="px-3 sm:px-4 pb-4 pt-1 border-t border-slate-800/50">
+        <div class="grid sm:grid-cols-2 gap-3 mt-3" id="day-blocks-${day.d}"></div>
+        ${day.note ? `<div class="text-xs text-amber-300 mt-3 italic">★ ${day.note}</div>` : ''}
+      </div>
+    `;
+    root.appendChild(card);
+    const blocksRoot = card.querySelector('#day-blocks-'+day.d);
+    blocksRoot.appendChild(makeBlockBtn(day.d, 'am', day.am));
+    blocksRoot.appendChild(makeBlockBtn(day.d, 'pm', day.pm));
+  });
+}
+
+// =============================================================================
+// RENDER — PB LEADERBOARD + SPARKLINE
+// =============================================================================
+
+const PB_ROWS = [
+  { key: 'march', label: 'March 10, 2026 (anchor)', baseline: true, m: 680, rw: 740 },
+  { key: 'diag',  label: '#1 Diagnostic (Sun May 24)', baseline: false },
+  { key: 'mid',   label: '#2 Mid-Sprint (Fri May 29)', baseline: false },
+  { key: 'dress', label: '#3 Dress Rehearsal (Thu Jun 4)', baseline: false },
+  { key: 'real',  label: 'REAL SAT (Sat Jun 6)', baseline: false, real: true },
+];
+
+function renderPB() {
+  const tbody = document.getElementById('pb-table');
+  tbody.innerHTML = '';
+  PB_ROWS.forEach(row => {
+    const sc = row.baseline ? { m: row.m, rw: row.rw } : (state.scores[row.key] || {});
+    const m = sc.m || '—', rw = sc.rw || '—';
+    const total = (typeof m === 'number' && typeof rw === 'number') ? m + rw : '—';
+    const delta = typeof total === 'number' ? (total - 1420) : '';
+    const deltaStr = typeof total === 'number'
+      ? (delta > 0 ? `<span class="text-emerald-400">+${delta}</span>` : delta < 0 ? `<span class="text-red-400">${delta}</span>` : `<span class="text-slate-400">0</span>`)
+      : '';
+    const tr = document.createElement('tr');
+    tr.className = 'border-t border-slate-800/40' + (row.real ? ' bg-amber-500/5' : '');
+    tr.innerHTML = `
+      <td class="py-2 pr-3 text-slate-200 ${row.baseline ? 'text-slate-400' : ''} ${row.real ? 'font-bold' : ''}">${row.label}</td>
+      <td class="text-right px-2 font-mono ${typeof m === 'number' && m >= 720 ? 'text-emerald-300 font-bold' : 'text-slate-200'}">${m}</td>
+      <td class="text-right px-2 font-mono text-slate-300">${rw}</td>
+      <td class="text-right px-2 font-mono font-bold text-white">${total}</td>
+      <td class="text-right pl-2 font-mono text-xs">${deltaStr}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  renderSparkline();
+}
+
+function renderSparkline() {
+  const root = document.getElementById('sparkline');
+  root.innerHTML = '';
+  const vals = PB_ROWS.map(r => r.baseline ? r.m : (state.scores[r.key]?.m || null));
+  const max = Math.max(800, ...vals.filter(v => v != null));
+  const min = Math.min(600, ...vals.filter(v => v != null));
+  PB_ROWS.forEach((r, i) => {
+    const v = vals[i];
+    const wrap = document.createElement('div');
+    wrap.className = 'flex-1 flex flex-col items-center gap-1';
+    const bar = document.createElement('div');
+    bar.className = 'sparkline-bar w-full rounded-t-md ' + (r.real ? 'bg-gradient-to-t from-amber-600 to-amber-300' : r.baseline ? 'bg-slate-700' : 'bg-gradient-to-t from-purple-700 to-purple-300');
+    if (v != null) {
+      const pct = ((v - min) / (max - min)) * 100;
+      bar.style.height = Math.max(8, pct) + '%';
+      bar.title = `Math ${v}`;
+    } else {
+      bar.style.height = '4%';
+      bar.classList.add('bg-slate-800');
+      bar.title = 'not yet';
+    }
+    const lbl = document.createElement('div');
+    lbl.className = 'text-[9px] text-slate-500 text-center leading-tight';
+    lbl.textContent = (v != null) ? v : '·';
+    wrap.appendChild(bar);
+    wrap.appendChild(lbl);
+    root.appendChild(wrap);
+  });
+}
+
+function showPbBanner(text) {
+  const el = document.getElementById('pb-banner');
+  document.getElementById('pb-banner-text').textContent = text;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 5200);
+}
+
+// =============================================================================
+// RENDER — TOPIC MASTERY
+// =============================================================================
+
+function tierFromPct(p) {
+  if (p == null) return 'app';
+  if (p >= 85) return 'master';
+  if (p >= 70) return 'expert';
+  if (p >= 50) return 'prac';
+  return 'app';
+}
+function tierEmoji(t) { return { app:'🥉', prac:'🥈', expert:'🥇', master:'💎' }[t]; }
+function tierLabel(t) { return { app:'Apprentice', prac:'Practitioner', expert:'Expert', master:'Master' }[t]; }
+
+function renderTopics() {
+  const renderInto = (root, list) => {
+    root.innerHTML = '';
+    list.forEach(t => {
+      const pct = state.topics[t.id];
+      const tier = tierFromPct(pct);
+      const tile = document.createElement('div');
+      tile.className = `topic-tile rounded-xl p-3 tier-${tier}`;
+      tile.innerHTML = `
+        <div class="text-2xl">${tierEmoji(tier)}</div>
+        <div class="text-xs font-bold mt-1 leading-tight">${t.label}</div>
+        <div class="text-[10px] opacity-70 mt-0.5">${pct != null ? pct + '% · ' + tierLabel(tier) : 'tap to log'}</div>
+      `;
+      tile.addEventListener('click', () => openTopicModal(t));
+      root.appendChild(tile);
+    });
+  };
+  renderInto(document.getElementById('topics-psda'), PSDA_TOPICS);
+  renderInto(document.getElementById('topics-geotrig'), GEOTRIG_TOPICS);
+}
+
+// =============================================================================
+// RENDER — TUTORS
+// =============================================================================
+
+function renderTutors() {
+  const root = document.getElementById('tutor-strip');
+  root.innerHTML = '';
+  TUTORS.forEach(t => {
+    const done = !!state.tutorsDone[t.n];
+    const chip = document.createElement('div');
+    chip.className = `rounded-2xl p-4 border ${done ? 'border-emerald-500/40 bg-emerald-500/10' : 'border-slate-700/40 bg-slate-900/40'} ${t.nola ? 'border-purple-500/40' : ''}`;
+    chip.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div class="text-xs font-bold text-slate-300">Session #${t.n}</div>
+        <button class="tutor-toggle text-xs px-2 py-1 rounded-full ${done ? 'bg-emerald-500/30 text-emerald-200' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}" data-n="${t.n}">${done ? '✓ done' : 'mark done'}</button>
+      </div>
+      <div class="text-base font-bold text-white mt-1">${t.date}${t.nola ? ' <span class="text-purple-300 text-xs">(NOLA · Zoom)</span>' : ''}</div>
+      <div class="text-xs text-slate-400 mt-1 leading-snug">${t.focus}</div>
+    `;
+    root.appendChild(chip);
+  });
+  root.querySelectorAll('.tutor-toggle').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const n = btn.dataset.n;
+      const xpKey = 'xp_tutor_' + n;
+      touch('tutorsDone');
+      if (state.tutorsDone[n]) {
+        delete state.tutorsDone[n];
+        refundXP(100, xpKey);
+      } else {
+        state.tutorsDone[n] = true;
+        awardXP(100, xpKey, btn);
+        confetti({ particleCount: 60, spread: 55, origin: { y: 0.6 } });
+      }
+      saveState();
+      renderTutors();
+    });
+  });
+}
+
+// =============================================================================
+// RENDER — REWARDS
+// =============================================================================
+
+function renderRewards() {
+  const root = document.getElementById('rewards-list');
+  root.innerHTML = '';
+  const streak = currentStreak();
+  REWARDS.forEach(r => {
+    const unlocked = streak >= r.day || state.rewardsClaimed[r.key];
+    const row = document.createElement('div');
+    row.className = `rounded-2xl p-3 border ${unlocked ? 'border-amber-400/40 bg-amber-500/10' : 'border-slate-700/40 bg-slate-900/40'} flex items-center gap-3`;
+    row.innerHTML = `
+      <div class="text-2xl shrink-0">${unlocked ? '🎉' : '🔒'}</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-xs ${unlocked ? 'text-amber-200' : 'text-slate-400'} uppercase tracking-wider">Day ${r.day} streak · ${unlocked ? 'UNLOCKED' : (r.day - streak) + ' day' + (r.day - streak === 1 ? '' : 's') + ' to go'}</div>
+        <div class="text-sm font-bold text-white">${r.label}</div>
+        <input type="text" placeholder="Rayed types his pick here..." class="reward-input mt-1 w-full text-xs bg-slate-800/60 border border-slate-700/60 rounded-lg px-2 py-1 text-slate-200 placeholder:text-slate-500" data-key="${r.key}" value="${(state.rewards[r.key] || '').replace(/"/g, '&quot;')}" />
+      </div>
+    `;
+    root.appendChild(row);
+  });
+  root.querySelectorAll('.reward-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      touch('rewards');
+      state.rewards[inp.dataset.key] = inp.value;
+      saveState();
+    });
+  });
+}
+
+// =============================================================================
+// RENDER — PRE-TEST
+// =============================================================================
+
+function renderPretest() {
+  const idx = currentDayIndex();
+  const card = document.getElementById('pretest-card');
+  if (idx < 11) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+  const root = document.getElementById('pretest-list');
+  root.innerHTML = '';
+  PRETEST.forEach((item, i) => {
+    const done = !!state.pretest[i];
+    const row = document.createElement('button');
+    row.className = `checkbox-btn flex items-center gap-2 p-3 rounded-xl border ${done ? 'done glow-green' : 'border-slate-700/40 bg-slate-900/40 hover:bg-slate-800/60'} text-left`;
+    row.innerHTML = `
+      <div class="shrink-0 w-6 h-6 rounded-md ${done ? 'bg-white/20' : 'bg-slate-800'} flex items-center justify-center">${done ? '✓' : ''}</div>
+      <div class="text-sm ${done ? 'text-white' : 'text-slate-200'}">${item}</div>
+    `;
+    row.addEventListener('click', () => {
+      touch('pretest');
+      if (state.pretest[i]) { delete state.pretest[i]; refundXP(5, 'pretest_'+i); }
+      else { state.pretest[i] = true; awardXP(5, 'pretest_'+i, row); }
+      saveState(); renderPretest();
+    });
+    root.appendChild(row);
+  });
+}
+
+// =============================================================================
+// MODALS
+// =============================================================================
+
+function openScoreModal(defaultKey) {
+  document.getElementById('score-which').value = defaultKey || 'diag';
+  document.getElementById('score-math').value = '';
+  document.getElementById('score-rw').value = '';
+  document.getElementById('score-total').textContent = '—';
+  document.getElementById('score-modal').classList.remove('hidden');
+}
+function closeScoreModal() { document.getElementById('score-modal').classList.add('hidden'); }
+
+document.getElementById('update-scores-btn').addEventListener('click', () => openScoreModal());
+document.getElementById('score-cancel').addEventListener('click', closeScoreModal);
+['score-math','score-rw'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    const m = parseInt(document.getElementById('score-math').value, 10);
+    const rw = parseInt(document.getElementById('score-rw').value, 10);
+    const tot = (m && rw) ? m + rw : '—';
+    document.getElementById('score-total').textContent = tot;
+  });
+});
+document.getElementById('score-save').addEventListener('click', () => {
+  const which = document.getElementById('score-which').value;
+  const m = parseInt(document.getElementById('score-math').value, 10);
+  const rw = parseInt(document.getElementById('score-rw').value, 10);
+  if (!m || !rw || m < 200 || m > 800 || rw < 200 || rw > 800) {
+    alert('Enter valid scores 200–800 for both Math and R&W');
+    return;
+  }
+  const prevBest = bestMath();
+  touch('scores');
+  state.scores[which] = { m, rw };
+  awardXP(200, 'score_'+which);
+  saveState();
+  closeScoreModal();
+  renderPB();
+  renderHero();
+  if (m > prevBest) {
+    awardXP(500, 'pb_' + which + '_' + m); // unique per (test, score) so re-entry doesn't double-pay
+    confetti({ particleCount: 200, spread: 100, origin: { y: 0.4 } });
+    showPbBanner(`Math ${m} — your highest yet! (+500 XP bonus)`);
+  } else {
+    showPbBanner(`Logged: Math ${m}, R&W ${rw}, Total ${m+rw}.`);
+  }
+});
+
+function bestMath() {
+  let best = 680; // March anchor
+  Object.values(state.scores).forEach(s => { if (s.m && s.m > best) best = s.m; });
+  return best;
+}
+
+let topicEditing = null;
+function openTopicModal(t) {
+  topicEditing = t;
+  document.getElementById('topic-modal-title').textContent = t.label;
+  const cur = state.topics[t.id] != null ? state.topics[t.id] : '';
+  document.getElementById('topic-pct').value = cur;
+  updateTopicPreview(cur);
+  document.getElementById('topic-modal').classList.remove('hidden');
+}
+function closeTopicModal() { document.getElementById('topic-modal').classList.add('hidden'); }
+function updateTopicPreview(v) {
+  const pct = parseInt(v, 10);
+  if (isNaN(pct)) { document.getElementById('topic-tier-preview').textContent = '—'; return; }
+  const t = tierFromPct(pct);
+  document.getElementById('topic-tier-preview').textContent = `${tierEmoji(t)} ${tierLabel(t)} (${pct}%)`;
+}
+document.getElementById('topic-pct').addEventListener('input', e => updateTopicPreview(e.target.value));
+document.getElementById('topic-cancel').addEventListener('click', closeTopicModal);
+document.getElementById('topic-save').addEventListener('click', () => {
+  if (!topicEditing) return;
+  const v = parseInt(document.getElementById('topic-pct').value, 10);
+  if (isNaN(v) || v < 0 || v > 100) { alert('Enter 0–100'); return; }
+  const prev = state.topics[topicEditing.id];
+  const prevTier = tierFromPct(prev);
+  const newTier = tierFromPct(v);
+  touch('topics');
+  state.topics[topicEditing.id] = v;
+  saveState();
+  closeTopicModal();
+  renderTopics();
+  const order = ['app','prac','expert','master'];
+  if (order.indexOf(newTier) > order.indexOf(prevTier)) {
+    showTierToast(`${topicEditing.label} → ${tierLabel(newTier)} ${tierEmoji(newTier)}`);
+    confetti({ particleCount: 90, spread: 70, origin: { y: 0.55 } });
+    awardXP(50, 'tier_' + topicEditing.id + '_' + newTier);
+  }
+});
+
+function showTierToast(text) {
+  const el = document.getElementById('tier-toast');
+  document.getElementById('tier-toast-text').textContent = text;
+  el.classList.remove('hidden');
+  el.querySelector('div').classList.remove('tier-pop'); // restart animation
+  void el.querySelector('div').offsetWidth;
+  el.querySelector('div').classList.add('tier-pop');
+  setTimeout(() => el.classList.add('hidden'), 3000);
+}
+
+// Who modal
+document.getElementById('who-am-i').addEventListener('click', () => document.getElementById('who-modal').classList.remove('hidden'));
+document.getElementById('who-cancel').addEventListener('click', () => document.getElementById('who-modal').classList.add('hidden'));
+document.querySelectorAll('.who-pick').forEach(b => b.addEventListener('click', () => {
+  touch('who');
+  state.who = b.dataset.who; saveState(); renderWho();
+  document.getElementById('who-modal').classList.add('hidden');
+}));
+function renderWho() {
+  const map = { rayed: '🎓 Rayed', naznee: '💛 Naznee', rias: '👤 Rias' };
+  document.getElementById('who-label').textContent = state.who ? map[state.who] : '👤 Set viewer';
+}
+
+// Reset modal
+document.getElementById('reset-btn').addEventListener('click', () => document.getElementById('reset-modal').classList.remove('hidden'));
+document.getElementById('reset-cancel').addEventListener('click', () => document.getElementById('reset-modal').classList.add('hidden'));
+document.getElementById('reset-confirm').addEventListener('click', () => {
+  localStorage.removeItem(LS_KEY);
+  state = loadState();
+  document.getElementById('reset-modal').classList.add('hidden');
+  renderAll();
+  if (syncManager.url) syncManager.pushNow();
+});
+
+// Sync chip + modal wiring
+const SYNC_LABELS = {
+  unset:   { txt: '⚫ Local-only', detail: 'No URL configured. Working in local-only mode.' },
+  syncing: { txt: '🟡 Syncing…',   detail: 'Talking to backend.' },
+  synced:  { txt: '🟢 Synced',     detail: 'Last sync just now.' },
+  offline: { txt: '🔴 Offline',    detail: 'Sync failed. Will retry on next change or in 60s.' },
+};
+function renderSyncChip(status) {
+  const m = SYNC_LABELS[status] || SYNC_LABELS.unset;
+  document.getElementById('sync-chip-label').textContent = m.txt;
+  const d = document.getElementById('sync-status-detail');
+  if (d) d.textContent = 'Status: ' + m.detail;
+}
+syncManager.onStatus(renderSyncChip);
+
+document.getElementById('sync-chip').addEventListener('click', () => {
+  document.getElementById('sync-url-input').value = syncManager.url || '';
+  document.getElementById('sync-modal').classList.remove('hidden');
+});
+document.getElementById('sync-cancel').addEventListener('click', () => document.getElementById('sync-modal').classList.add('hidden'));
+document.getElementById('sync-save').addEventListener('click', () => {
+  const u = document.getElementById('sync-url-input').value.trim();
+  try {
+    syncManager.setUrl(u);
+    document.getElementById('sync-modal').classList.add('hidden');
+  } catch (e) {
+    alert(e.message);
+  }
+});
+document.getElementById('sync-clear').addEventListener('click', () => {
+  syncManager.setUrl('');
+  document.getElementById('sync-modal').classList.add('hidden');
+});
+
+if (syncManager.url) { syncManager.pull(); syncManager.startPolling(); }
+document.addEventListener('visibilitychange', () => { if (!document.hidden && syncManager.url) syncManager.pull(); });
+
+// =============================================================================
+// RENDER ALL
+// =============================================================================
+
+function renderAll() {
+  renderHero();
+  renderToday();
+  renderCalendar();
+  renderPB();
+  renderTopics();
+  renderTutors();
+  renderRewards();
+  renderPretest();
+  renderWho();
+}
+
+renderAll();
+
+// Re-render time-sensitive bits every 5 minutes (in case page is left open)
+setInterval(() => { renderHero(); renderToday(); renderCalendar(); renderPretest(); }, 5 * 60 * 1000);
+
+</script>
+</body>
+</html>
