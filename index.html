@@ -229,7 +229,7 @@
     <div class="space-y-1">
       <div>March 10, 2026 anchor — Math <strong class="text-slate-300">680</strong> (PS&amp;DA 610-670 • Geo/Trig 610-670) · R&amp;W <strong class="text-slate-300">740</strong> · Total <strong class="text-slate-300">1420</strong>.</div>
       <div>Sprint plan: <code>JUNE-6-SAT-MATH-SPRINT_14-Day-Timeline_2026-05-23.md</code> · Handoff: <code>PREP-EXPERT-004</code></div>
-      <div class="opacity-60">v1.3 · One-tap sync via ?sync= URL param · Built 2026-05-24</div>
+      <div class="opacity-60">v1.4 · Shout-outs + dynamic quotes + daily login bonus + Zeba viewer · Built 2026-05-24</div>
     </div>
   </footer>
 
@@ -284,10 +284,11 @@
   <div class="glass rounded-3xl p-6 max-w-sm w-full">
     <h3 class="text-xl font-bold text-white mb-1">Whose device is this?</h3>
     <p class="text-xs text-slate-400 mb-4">Just a friendly label — doesn't change your state.</p>
-    <div class="grid grid-cols-3 gap-2">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
       <button data-who="rayed" class="who-pick px-3 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 text-sm font-bold">🎓 Rayed</button>
       <button data-who="naznee" class="who-pick px-3 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 text-sm font-bold">💛 Naznee</button>
       <button data-who="rias" class="who-pick px-3 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 text-sm font-bold">👤 Rias</button>
+      <button data-who="zeba" class="who-pick px-3 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 text-sm font-bold">🌟 Zeba</button>
     </div>
     <div class="mt-4 text-right">
       <button id="who-cancel" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Close</button>
@@ -362,7 +363,72 @@ const QUOTES = [
   "Your IB finals trained you for endurance. The SAT is a sprint by comparison.",
   "Streak is sacred. Don't let yesterday turn red.",
   "Show up. Just show up. That alone beats 80% of test-takers.",
+  "Your brain is a muscle. PS&DA is leg day.",
+  "Algebra is the floor. Geo/Trig is where the points live.",
+  "Desmos isn't cheating — it's literacy.",
+  "A wrong answer reviewed is worth 3 right answers skipped.",
+  "Pacing is a skill. Practice it like a topic.",
+  "If a question takes more than 90 seconds, flag and move.",
+  "The test rewards stamina more than brilliance.",
+  "Mistakes today = points on June 6.",
+  "You don't have to feel ready. Just be prepared.",
+  "Show up to the boring middle. That's where the points come from.",
+  "Sleep is a study tool.",
+  "Hydrate. The brain runs on water.",
+  "Your IB grind trained you for this. Sprint is shorter than IB.",
+  "Tier 1 topics first. Always.",
+  "One Bluebook section is worth ten YouTube videos.",
+  "The error log is the most underrated tool in your kit.",
+  "There's no such thing as a small win in week 2.",
+  "Streak day = unconditional respect from yourself tomorrow.",
+  "Test-day Rayed thanks today-Rayed.",
+  "Two domains. Two weeks. Three tests. One score.",
+  "The point is to make hard problems feel familiar.",
+  "Practice tests are diagnoses, not verdicts.",
+  "Confidence is the LAGGING indicator. Reps are the leading one.",
+  "Don't peak the day before. Peak on the day.",
+  "Friday night = sleep, not flashcards.",
+  "Calculus next year. SAT math this month. Different tools.",
+  "Read the question twice. Solve it once.",
+  "If you can teach it, you know it. Try teaching one topic to Mom.",
+  "94th percentile is a starting line, not a ceiling.",
+  "There's no shortcut to 1500+, but there's a path. You're on it.",
 ];
+
+// Shout-outs fire when Rayed completes BOTH AM + PM on a single day.
+// Milestone-specific messages override the generic pool on those days.
+const SHOUTOUTS_GENERIC = [
+  "That's how it's done.",
+  "Two for two today. Streak respects consistency.",
+  "Dad would high-five you right now.",
+  "Mom says: that's the focus we love to see.",
+  "Quiet, repeatable work. The whole game.",
+  "Math just got a little less scary.",
+  "Another brick in the wall. Wall's almost done.",
+  "Future-you is already saying thank you.",
+  "PS&DA is starting to feel like a friend.",
+  "Geo/Trig is starting to feel like a friend.",
+  "Tutor's gonna notice this.",
+  "Sleep well — you earned it.",
+  "Show up. You did. Twice.",
+  "Best version of you happens in the boring days. Today was one.",
+  "Streak day. Keep the chain alive.",
+  "Compound interest, applied to your brain.",
+  "You vs yesterday-you: today-you wins.",
+  "Zeba says: bro showed up.",
+  "Confidence is built one block at a time. Today: 2 bricks.",
+  "Less talk, more taps. That's you.",
+];
+const SHOUTOUTS_MILESTONE = {
+  1:  "First day in the books. Long road, you started right.",
+  3:  "3-day streak! Tier 1 weak topics are no longer strangers.",
+  6:  "6-day streak! Test #2 done. NOLA awaits. Halfway there.",
+  8:  "8-day streak! Tutor #3 done — the most leveraged hour of the sprint is behind you.",
+  10: "10-day streak! Final tutor session in the books. Dress rehearsal next.",
+  12: "Dress rehearsal done. Tomorrow you rest. Saturday you execute.",
+  13: "13/13. You did the full sprint. Saturday is just one more block.",
+  14: "Test day. Walk in calm. Lunch out either way.",
+};
 
 const REWARDS = [
   { day: 3,  label: "Pick a reward — Rayed picks",                          key: "r3"  },
@@ -490,6 +556,7 @@ const DEFAULT_STATE = {
   streakFreezeUsed: false,
   xp: 0,
   xpAwarded: {},          // dedupe key-set so we don't double-award
+  lastLoginDate: '',          // YYYY-MM-DD; awards +10 XP on first open of a new day (only if who === 'rayed')
 };
 
 let state = loadState();
@@ -745,7 +812,7 @@ function renderToday() {
   }
   const day = SCHEDULE[idx - 1];
   titleEl.innerHTML = `Day ${idx}/14 · ${day.date} — <span class="text-amber-200">${day.title}</span>`;
-  const qIdx = (idx - 1) % QUOTES.length;
+  const qIdx = Math.floor(Math.random() * QUOTES.length);
   quoteEl.textContent = `"${QUOTES[qIdx]}"`;
 
   if (day.am.tag === 'TEST' || day.pm.tag === 'TEST') {
@@ -792,6 +859,11 @@ function toggleBlock(dayNum, slot, el) {
   } else {
     state.checks[key] = true;
     awardXP(25, xpKey, el);
+    // Fire shout-out when BOTH am+pm just became checked for this day
+    const otherSlot = slot === 'am' ? 'pm' : 'am';
+    if (state.checks[`d${dayNum}_${otherSlot}`]) {
+      showShoutout(dayNum);
+    }
     // streak milestone check (both am+pm done for today and on a milestone)
     const streakAfter = currentStreak();
     REWARDS.forEach(r => {
@@ -930,6 +1002,26 @@ function renderSparkline() {
 function showPbBanner(text) {
   const el = document.getElementById('pb-banner');
   document.getElementById('pb-banner-text').textContent = text;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 5200);
+}
+
+function showShoutout(dayNum) {
+  let msg = SHOUTOUTS_MILESTONE[dayNum];
+  if (!msg) {
+    msg = SHOUTOUTS_GENERIC[Math.floor(Math.random() * SHOUTOUTS_GENERIC.length)];
+  }
+  const el = document.getElementById('pb-banner');
+  const txt = document.getElementById('pb-banner-text');
+  if (!el || !txt) return;
+  const inner = el.querySelector('div');
+  if (inner) {
+    inner.classList.remove('glow-amber');
+    inner.classList.add('glow-green');
+  }
+  const big = el.querySelector('.text-2xl');
+  if (big) big.textContent = `🎉 Day ${dayNum} done`;
+  txt.textContent = msg;
   el.classList.remove('hidden');
   setTimeout(() => el.classList.add('hidden'), 5200);
 }
@@ -1181,7 +1273,7 @@ document.querySelectorAll('.who-pick').forEach(b => b.addEventListener('click', 
   document.getElementById('who-modal').classList.add('hidden');
 }));
 function renderWho() {
-  const map = { rayed: '🎓 Rayed', naznee: '💛 Naznee', rias: '👤 Rias' };
+  const map = { rayed: '🎓 Rayed', naznee: '💛 Naznee', rias: '👤 Rias', zeba: '🌟 Zeba' };
   document.getElementById('who-label').textContent = state.who ? map[state.who] : '👤 Set viewer';
 }
 
@@ -1263,13 +1355,37 @@ document.getElementById('sync-clear').addEventListener('click', () => {
 })();
 
 if (syncManager.url) { syncManager.pull(); syncManager.startPolling(); }
-document.addEventListener('visibilitychange', () => { if (!document.hidden && syncManager.url) syncManager.pull(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { renderToday(); if (syncManager.url) syncManager.pull(); } });
 
 // =============================================================================
 // RENDER ALL
 // =============================================================================
 
 function renderAll() {
+  // Daily login bonus — first open of the day for Rayed only
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    if (state.who === 'rayed' && state.lastLoginDate !== today) {
+      state.lastLoginDate = today;
+      awardXP(10, 'login_' + today);
+      touch('lastLoginDate');
+      saveState();
+      // Toast (reuse pb-banner machinery)
+      setTimeout(() => {
+        const el = document.getElementById('pb-banner');
+        const txt = document.getElementById('pb-banner-text');
+        if (el && txt) {
+          const inner = el.querySelector('div');
+          if (inner) { inner.classList.remove('glow-amber'); inner.classList.add('glow-green'); }
+          const big = el.querySelector('.text-2xl');
+          if (big) big.textContent = '🌅 Welcome back';
+          txt.textContent = '+10 XP for showing up today. Streak respects consistency.';
+          el.classList.remove('hidden');
+          setTimeout(() => el.classList.add('hidden'), 4500);
+        }
+      }, 800);
+    }
+  } catch (e) { console.warn('Login bonus skipped:', e); }
   renderHero();
   renderToday();
   renderCalendar();
