@@ -229,7 +229,7 @@
     <div class="space-y-1">
       <div>March 10, 2026 anchor — Math <strong class="text-slate-300">680</strong> (PS&amp;DA 610-670 • Geo/Trig 610-670) · R&amp;W <strong class="text-slate-300">740</strong> · Total <strong class="text-slate-300">1420</strong>.</div>
       <div>Sprint plan: <code>JUNE-6-SAT-MATH-SPRINT_14-Day-Timeline_2026-05-23.md</code> · Handoff: <code>PREP-EXPERT-004</code></div>
-      <div class="opacity-60">v1.2 · State persists locally (+ optional Sheet sync) · Built 2026-05-23</div>
+      <div class="opacity-60">v1.3 · One-tap sync via ?sync= URL param · Built 2026-05-24</div>
     </div>
   </footer>
 
@@ -1229,6 +1229,38 @@ document.getElementById('sync-clear').addEventListener('click', () => {
   syncManager.setUrl('');
   document.getElementById('sync-modal').classList.add('hidden');
 });
+
+// Auto-configure sync from URL param ?sync=<exec-url>
+(function autoConfigSyncFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const u = params.get('sync');
+    if (!u) return;
+    syncManager.setUrl(u); // validates + saves to localStorage + triggers initial pull
+    // Strip the param so the URL bar shows a clean address
+    const cleanUrl = window.location.pathname + window.location.hash;
+    history.replaceState(null, '', cleanUrl);
+    // Friendly toast (reuse the existing PB banner element for visual feedback)
+    setTimeout(() => {
+      const el = document.getElementById('pb-banner');
+      const txt = document.getElementById('pb-banner-text');
+      if (el && txt) {
+        const inner = el.querySelector('div');
+        if (inner) {
+          inner.classList.remove('glow-amber');
+          inner.classList.add('glow-green');
+        }
+        const big = el.querySelector('.text-2xl');
+        if (big) big.textContent = '🟢 Sync activated';
+        txt.textContent = 'This device now syncs with the rest of the family.';
+        el.classList.remove('hidden');
+        setTimeout(() => el.classList.add('hidden'), 4500);
+      }
+    }, 600);
+  } catch (e) {
+    console.warn('Auto-sync from URL param failed:', e);
+  }
+})();
 
 if (syncManager.url) { syncManager.pull(); syncManager.startPolling(); }
 document.addEventListener('visibilitychange', () => { if (!document.hidden && syncManager.url) syncManager.pull(); });
