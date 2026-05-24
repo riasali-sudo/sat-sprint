@@ -216,6 +216,12 @@
     <h2 class="text-lg font-bold text-white mb-3">🎁 Streak Rewards (Rayed picks)</h2>
     <div id="rewards-list" class="space-y-2"></div>
     <p class="text-xs text-slate-500 mt-3">Type what you want into each box. Reward unlocks the day you hit the streak. Mom + Dad honor the pick — no substitutions.</p>
+    <div class="mt-4 pt-4 border-t border-slate-800/40">
+      <button id="open-shoutouts-editor" class="w-full text-left text-xs text-fuchsia-300 hover:text-fuchsia-200 hover:bg-fuchsia-500/10 rounded-xl px-3 py-2 transition">
+        ✏️ Add family shout-outs <span class="text-slate-500" id="shoutouts-count">(none yet)</span> →
+      </button>
+      <p class="text-[10px] text-slate-500 mt-1 px-3">Anyone in the family can write a message that Rayed will see when he completes a day. Saved across all devices.</p>
+    </div>
   </section>
 
   <!-- PRE-TEST CHECKLIST (Days 13-14) -->
@@ -229,7 +235,7 @@
     <div class="space-y-1">
       <div>March 10, 2026 anchor — Math <strong class="text-slate-300">680</strong> (PS&amp;DA 610-670 • Geo/Trig 610-670) · R&amp;W <strong class="text-slate-300">740</strong> · Total <strong class="text-slate-300">1420</strong>.</div>
       <div>Sprint plan: <code>JUNE-6-SAT-MATH-SPRINT_14-Day-Timeline_2026-05-23.md</code> · Handoff: <code>PREP-EXPERT-004</code></div>
-      <div class="opacity-60">v1.4 · Shout-outs + dynamic quotes + daily login bonus + Zeba viewer · Built 2026-05-24</div>
+      <div class="opacity-60">v1.5 · Family shout-outs editor · Built 2026-05-24</div>
     </div>
   </footer>
 
@@ -330,6 +336,23 @@
     <div class="flex gap-2 justify-center">
       <button id="reset-cancel" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Cancel</button>
       <button id="reset-confirm" class="px-4 py-2 text-sm rounded-xl bg-red-500 text-white font-bold hover:bg-red-400">Yes, reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHOUT-OUTS EDITOR MODAL -->
+<div id="shoutouts-modal" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+  <div class="glass rounded-3xl p-6 max-w-lg w-full">
+    <h3 class="text-xl font-bold text-white mb-1">✏️ Family shout-outs</h3>
+    <p class="text-xs text-slate-400 mb-4">One message per line. These appear when Rayed completes a full day (both AM + PM). Mixed into the curated pool so every day feels like family is talking.</p>
+    <textarea id="shoutouts-textarea"
+      rows="10"
+      placeholder="Mom: I'm so proud of how you're showing up.&#10;Dad: That's the discipline that compounds.&#10;Zeba: Bro is built different."
+      class="w-full px-3 py-2 rounded-xl bg-slate-800/70 border border-slate-700 text-white text-sm font-mono leading-relaxed"></textarea>
+    <div class="mt-2 text-xs text-slate-500" id="shoutouts-editor-count">0 messages</div>
+    <div class="mt-5 flex gap-2 justify-end">
+      <button id="shoutouts-cancel" class="px-4 py-2 text-sm rounded-xl text-slate-300 hover:bg-slate-800/60">Cancel</button>
+      <button id="shoutouts-save" class="px-4 py-2 text-sm rounded-xl bg-fuchsia-500 text-white font-bold hover:bg-fuchsia-400">Save</button>
     </div>
   </div>
 </div>
@@ -557,6 +580,7 @@ const DEFAULT_STATE = {
   xp: 0,
   xpAwarded: {},          // dedupe key-set so we don't double-award
   lastLoginDate: '',          // YYYY-MM-DD; awards +10 XP on first open of a new day (only if who === 'rayed')
+  customShoutouts: [],        // family-written messages (one per line in the editor); mixed into the shout-out random pool
 };
 
 let state = loadState();
@@ -669,7 +693,7 @@ class SyncManager {
 
 function stripStateForSync(s) {
   const out = {};
-  ['who','checks','scores','topics','rewards','rewardsClaimed','tutorsDone','pretest','streakFreezeUsed','xp','xpAwarded']
+  ['who','checks','scores','topics','rewards','rewardsClaimed','tutorsDone','pretest','streakFreezeUsed','xp','xpAwarded','lastLoginDate','customShoutouts']
     .forEach(k => { out[k] = s[k]; });
   return out;
 }
@@ -1007,9 +1031,13 @@ function showPbBanner(text) {
 }
 
 function showShoutout(dayNum) {
+  // Milestone messages always win for those specific days.
+  // Otherwise pick at random from the mixed pool of curated + family-written messages.
   let msg = SHOUTOUTS_MILESTONE[dayNum];
   if (!msg) {
-    msg = SHOUTOUTS_GENERIC[Math.floor(Math.random() * SHOUTOUTS_GENERIC.length)];
+    const custom = Array.isArray(state.customShoutouts) ? state.customShoutouts : [];
+    const pool = SHOUTOUTS_GENERIC.concat(custom);
+    msg = pool[Math.floor(Math.random() * pool.length)];
   }
   const el = document.getElementById('pb-banner');
   const txt = document.getElementById('pb-banner-text');
@@ -1358,6 +1386,53 @@ if (syncManager.url) { syncManager.pull(); syncManager.startPolling(); }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { renderToday(); if (syncManager.url) syncManager.pull(); } });
 
 // =============================================================================
+// SHOUT-OUTS EDITOR
+// =============================================================================
+
+function openShoutoutsEditor() {
+  const ta = document.getElementById('shoutouts-textarea');
+  ta.value = (state.customShoutouts || []).join('\n');
+  updateShoutoutsCount(ta.value);
+  document.getElementById('shoutouts-modal').classList.remove('hidden');
+  setTimeout(() => ta.focus(), 50);
+}
+function closeShoutoutsEditor() {
+  document.getElementById('shoutouts-modal').classList.add('hidden');
+}
+function updateShoutoutsCount(raw) {
+  const lines = (raw || '').split('\n').map(s => s.trim()).filter(Boolean);
+  document.getElementById('shoutouts-editor-count').textContent = `${lines.length} message${lines.length === 1 ? '' : 's'}`;
+}
+function saveShoutoutsFromEditor() {
+  const ta = document.getElementById('shoutouts-textarea');
+  // Split on newlines, trim, drop blanks, dedupe (preserve order), cap at 100
+  const seen = new Set();
+  const cleaned = ta.value.split('\n').map(s => s.trim()).filter(s => {
+    if (!s) return false;
+    const lo = s.toLowerCase();
+    if (seen.has(lo)) return false;
+    seen.add(lo);
+    return true;
+  }).slice(0, 100);
+  state.customShoutouts = cleaned;
+  touch('customShoutouts');
+  saveState();
+  renderShoutoutsCountChip();
+  closeShoutoutsEditor();
+}
+function renderShoutoutsCountChip() {
+  const el = document.getElementById('shoutouts-count');
+  if (!el) return;
+  const n = (state.customShoutouts || []).length;
+  el.textContent = n === 0 ? '(none yet)' : `(${n} family message${n === 1 ? '' : 's'})`;
+}
+
+document.getElementById('open-shoutouts-editor').addEventListener('click', openShoutoutsEditor);
+document.getElementById('shoutouts-cancel').addEventListener('click', closeShoutoutsEditor);
+document.getElementById('shoutouts-save').addEventListener('click', saveShoutoutsFromEditor);
+document.getElementById('shoutouts-textarea').addEventListener('input', e => updateShoutoutsCount(e.target.value));
+
+// =============================================================================
 // RENDER ALL
 // =============================================================================
 
@@ -1394,6 +1469,7 @@ function renderAll() {
   renderTutors();
   renderRewards();
   renderPretest();
+  renderShoutoutsCountChip();
   renderWho();
 }
 
